@@ -21,49 +21,65 @@ public class WebServer {
                     );
                     String request = reader.readLine();
                     System.out.println("REQUEST : " + request);
-
-                    String header;
-
-                    while ((header = reader.readLine()) != null && !header.isEmpty()) {
-                        System.out.println("HEADER : " + header);
-
-                    }
-                    String requestLine = request;
-
-                    String[] parts = requestLine.split(" ");
-                    String path = parts[1];
-
-
-                    String method = parts[0];
-                    System.out.println("METHOD: " + method);
-
-                    String body;
-                    int statusCode;
-                    String statusText;
-                    if(!method.equals("GET")) {
-                        body = "405 Method Not Allowed";
-                        statusCode = 405;
-                        statusText = "Method Not Allowed";
+                    if (request == null || request.isBlank()) {
+                        System.out.println("Empty request received!");
+                        continue;
                     } else {
 
-                        if (path.equals("/")) {
-                            body = "Home Page";
-                            statusCode = 200;
-                            statusText = "OK";
-                        } else if (path.equals("/about")) {
-                            body = "About Page";
-                            statusCode = 200;
-                            statusText = "OK";
-                        } else if (path.equals("/contact")) {
-                            body = "Contact Page";
-                            statusCode = 200;
-                            statusText = "OK";
-                        } else {
-                            body = "404 Not Found";
-                            statusCode = 404;
-                            statusText = "Not Found";
+                        String header;
+
+                        while ((header = reader.readLine()) != null && !header.isEmpty()) {
+                            System.out.println("HEADER : " + header);
+
                         }
-                    }
+                        String requestLine = request;
+
+                        String[] parts = requestLine.trim().split("\\s+");
+
+                        String path = "";
+                        String method = "";
+
+
+                        String body;
+                        int statusCode;
+                        String statusText;
+
+
+                        if (parts.length != 3) {
+                            body = "400 Bad Request";
+                            statusCode = 400;
+                            statusText = "Bad Request";
+                        } else {
+                            method = parts[0];
+                            path = parts[1];
+
+                            if (!method.equals("GET")) {
+                                body = "405 Method Not Allowed";
+                                statusCode = 405;
+                                statusText = "Method Not Allowed";
+                            } else {
+
+
+                                if (path.equals("/")) {
+                                    body = "Home Page";
+                                    statusCode = 200;
+                                    statusText = "OK";
+                                } else if (path.equals("/about")) {
+                                    body = "About Page";
+                                    statusCode = 200;
+                                    statusText = "OK";
+                                } else if (path.equals("/contact")) {
+                                    body = "Contact Page";
+                                    statusCode = 200;
+                                    statusText = "OK";
+                                } else {
+                                    body = "404 Not Found";
+                                    statusCode = 404;
+                                    statusText = "Not Found";
+                                }
+                            }
+                        }
+
 
                         String response =
                                 "HTTP/1.1 " + statusCode + " " + statusText + "\r\n" +
@@ -86,3 +102,5 @@ public class WebServer {
             }
         }
     }
+}
+
