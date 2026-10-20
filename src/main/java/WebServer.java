@@ -45,6 +45,7 @@ public class WebServer {
                         String body;
                         int statusCode;
                         String statusText;
+                        String contentType = "text/html; charset=UTF-8";
 
 
                         if (parts.length != 3) {
@@ -84,6 +85,16 @@ public class WebServer {
                                     );
                                     statusCode = 200;
                                     statusText = "OK";
+
+                                } else if (path.equals("/style.css")) {
+                                    body = Files.readString(
+                                            Path.of("src/main/resources/static/style.css"),
+                                            StandardCharsets.UTF_8);
+                                    statusCode=200;
+                                    statusText="OK";
+                                    contentType = "text/css; charset=UTF-8";
+
+
                                 } else {
                                     body = "404 Not Found";
                                     statusCode = 404;
@@ -95,7 +106,7 @@ public class WebServer {
 
                         String response =
                                 "HTTP/1.1 " + statusCode + " " + statusText + "\r\n" +
-                                        "Content-Type: text/html; charset=UTF-8\r\n" +
+                                        "Content-Type: " + contentType + "\r\n" +
                                         "Content-Length: " + body.getBytes(StandardCharsets.UTF_8).length + "\r\n" +
                                         "Connection: close\r\n" +
                                         "\r\n" +
