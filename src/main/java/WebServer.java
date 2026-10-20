@@ -27,7 +27,7 @@ public class WebServer {
                          System.out.println("HEADER : "+header);
 
                     }
-                    String requestLine = reader.readLine();
+                    String requestLine = request;
 
                     String[] parts = requestLine.split(" ");
                     String path = parts[1];
@@ -38,7 +38,7 @@ public class WebServer {
                     if (path.equals("/")) {
                         body = "Home Page";
                         statusCode = 200;
-                        statusText="ok";
+                        statusText="OK";
                     } else if (path.equals("/about")) {
                         body = "About Page";
                         statusCode = 200;
@@ -53,18 +53,22 @@ public class WebServer {
                         statusText = "Not Found";
                     }
 
+                    String response =
+                            "HTTP/1.1 " + statusCode + " " + statusText + "\r\n" +
+                                    "Content-Type: text/plain; charset=UTF-8\r\n" +
+                                    "Content-Length: " + body.getBytes(StandardCharsets.UTF_8).length + "\r\n" +
+                                    "Connection: close\r\n" +
+                                    "\r\n" +
+                                    body;
 
-                        String response =
-                             "HTTP/1.1 200 OK\r\n" +
-                                     "Content-Type: text/plain; charset=UTF-8\r\n" +
-                                     "Content-Length: 12\r\n" +
-                                     "Connection: close\r\n" +
-                                      "\r\n" +
-                                      "Hello World!";
+                    System.out.println("ROUTE: " + path
+                            + " | STATUS: " + statusCode
+                            + " | BODY: " + body);
 
                         OutputStream out = client.getOutputStream();
                          out.write(response.getBytes(StandardCharsets.UTF_8));
                          out.flush();
+                    System.out.println("RESPONSE SENT");
                 }
             }
         }
