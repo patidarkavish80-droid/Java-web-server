@@ -94,8 +94,16 @@ public class WebServer {
                                     statusText="OK";
                                     contentType = "text/css; charset=UTF-8";
 
-
-                                } else {
+                                }else if(path.equals("/script.js")){
+                                    body = Files.readString(
+                                            Path.of("src/main/resources/static/script.js"),
+                                            StandardCharsets.UTF_8
+                                    );
+                                    contentType="text/javascript ; charset =UTF-8";
+                                    statusCode =200;
+                                    statusText="OK";
+                                }
+                                else {
                                     body = "404 Not Found";
                                     statusCode = 404;
                                     statusText = "Not Found";
