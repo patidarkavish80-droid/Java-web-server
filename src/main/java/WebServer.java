@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 
 public class WebServer {
@@ -61,15 +63,25 @@ public class WebServer {
 
 
                                 if (path.equals("/")) {
-                                    body = "Home Page";
+                                    body = Files.readString(
+                                            Path.of("src/main/resources/static/index.html"),
+                                            StandardCharsets.UTF_8
+                                    );
                                     statusCode = 200;
                                     statusText = "OK";
                                 } else if (path.equals("/about")) {
-                                    body = "About Page";
+                                    body = Files.readString(
+                                            Path.of("src/main/resources/static/about.html"),
+                                            StandardCharsets.UTF_8
+
+                                    );
                                     statusCode = 200;
                                     statusText = "OK";
                                 } else if (path.equals("/contact")) {
-                                    body = "Contact Page";
+                                    body = Files.readString(
+                                            Path.of("src/main/resources/static/contact.html"),
+                                            StandardCharsets.UTF_8
+                                    );
                                     statusCode = 200;
                                     statusText = "OK";
                                 } else {
@@ -83,7 +95,7 @@ public class WebServer {
 
                         String response =
                                 "HTTP/1.1 " + statusCode + " " + statusText + "\r\n" +
-                                        "Content-Type: text/plain; charset=UTF-8\r\n" +
+                                        "Content-Type: text/html; charset=UTF-8\r\n" +
                                         "Content-Length: " + body.getBytes(StandardCharsets.UTF_8).length + "\r\n" +
                                         "Connection: close\r\n" +
                                         "\r\n" +
