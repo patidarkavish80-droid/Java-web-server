@@ -71,37 +71,59 @@ public class WebServer {
                                     statusCode = 200;
                                     statusText = "OK";
                                 } else if (path.equals("/about")) {
-                                    body = Files.readString(
-                                            Path.of("src/main/resources/static/about.html"),
-                                            StandardCharsets.UTF_8
+                                          Path filePath =  Path.of("src/main/resources/static/about.html");
 
-                                    );
-                                    statusCode = 200;
-                                    statusText = "OK";
+                                          if(Files.exists(filePath)){
+                                              body = Files.readString(filePath,StandardCharsets.UTF_8);
+                                              statusCode=200;
+                                              statusText="OK";
+                                          }else {
+                                              body="404 Not Found";
+                                              statusCode=404;
+                                              statusText="Not Found";
+
+                                          }
+
                                 } else if (path.equals("/contact")) {
-                                    body = Files.readString(
-                                            Path.of("src/main/resources/static/contact.html"),
-                                            StandardCharsets.UTF_8
-                                    );
-                                    statusCode = 200;
-                                    statusText = "OK";
+                                  Path filepath = Path.of("src/main/resources/static/contact.html");
+
+                                    if (Files.exists(filepath)) {
+                                        body = (Files.readString(filepath,StandardCharsets.UTF_8));
+                                        statusCode=200;
+                                        statusText="OK";
+                                    }else {
+                                        body="404 Not Found";
+                                        statusCode=404;
+                                        statusText="Not Found";
+                                    }
 
                                 } else if (path.equals("/style.css")) {
-                                    body = Files.readString(
-                                            Path.of("src/main/resources/static/style.css"),
-                                            StandardCharsets.UTF_8);
-                                    statusCode=200;
-                                    statusText="OK";
-                                    contentType = "text/css; charset=UTF-8";
+                                    Path filepath = Path.of("src/main/resources/static/style.css");
+
+                                    if(Files.exists(filepath)){
+                                        body=Files.readString(filepath,StandardCharsets.UTF_8);
+                                        statusCode=200;
+                                        statusText="OK";
+                                        contentType = "text/css; charset=UTF-8";
+                                    }else{
+                                        body = "404 Not Found";
+                                        statusCode = 404;
+                                        statusText = "Not Found";
+                                    }
 
                                 }else if(path.equals("/script.js")){
-                                    body = Files.readString(
-                                            Path.of("src/main/resources/static/script.js"),
-                                            StandardCharsets.UTF_8
-                                    );
-                                    contentType="text/javascript ; charset =UTF-8";
-                                    statusCode =200;
-                                    statusText="OK";
+                                   Path filepath = Path.of("src/main/resources/static/script.js");
+
+                                   if(Files.exists(filepath)){
+                                       body=Files.readString(filepath,StandardCharsets.UTF_8);
+                                       statusCode=200;
+                                       statusText="OK";
+                                       contentType="text/javascript ;charset=UTF-8";
+                                   }else{
+                                       body="404 Not Found";
+                                       statusCode=404;
+                                       statusText="OK";
+                                   }
                                 }
                                 else {
                                     body = "404 Not Found";
