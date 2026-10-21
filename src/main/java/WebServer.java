@@ -5,7 +5,25 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 
 public class WebServer {
+    private static String readHttpLine(InputStream input) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int b;
 
+        while ((b = input.read()) != -1) {
+            if (b == '\n') {
+                break;
+            }
+            if (b != '\r') {
+                buffer.write(b);
+            }
+        }
+
+        if (b == -1 && buffer.size() == 0) {
+            return null;
+        }
+
+        return buffer.toString(StandardCharsets.UTF_8);
+    }
     public static void main(String[] args) throws IOException {
 
         ServerSocket server = new ServerSocket(8080);
@@ -14,21 +32,33 @@ public class WebServer {
         while (true) {
             try (Socket client = server.accept()) {
 
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(client.getInputStream())
-                );
+                InputStream input = client.getInputStream();
 
-                String request = reader.readLine();
+                String request = readHttpLine(input);
                 System.out.println("REQUEST: " + request);
 
                 if (request == null || request.isBlank()) {
                     continue;
                 }
 
+                int contentLength = 0;
                 String header;
-                while ((header = reader.readLine()) != null && !header.isEmpty()) {
+
+                while ((header = readHttpLine(input)) != null && !header.isEmpty()) {
                     System.out.println("HEADER: " + header);
+
+                    if (header.toLowerCase().startsWith("content-length:")) {
+                        contentLength = Integer.parseInt(
+                                header.substring(header.indexOf(":") + 1).trim()
+                        );
+                    }
                 }
+
+                System.out.println("Content Length: " + contentLength);
+                byte[] bodyBytes = input.readNBytes(contentLength);
+                String requestBody = new String(bodyBytes, StandardCharsets.UTF_8);
+
+                System.out.println("POST BODY: " + requestBody);
 
                 String[] parts = request.trim().split("\\s+");
 
@@ -46,8 +76,12 @@ public class WebServer {
                 } else {
                     String method = parts[0];
                     path = parts[1];
+                    if (method.equals("POST") && path.equals("/submit")) {
+                        body = "Form submitted successfully!";
+                        statusCode = 200;
+                        statusText = "OK";
 
-                    if (!method.equals("GET")) {
+                    } else if (!method.equals("GET")) {
                         body = "405 Method Not Allowed";
                         statusCode = 405;
                         statusText = "Method Not Allowed";

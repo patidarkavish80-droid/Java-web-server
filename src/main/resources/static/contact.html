@@ -1,18 +1,24 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <link rel="stylesheet" href="/style.css">
-    <meta charset="UTF-8">
     <title>Contact Us</title>
 </head>
 <body>
 <h1>Contact Us</h1>
 
-<p>Welcome to the contact page of my Java Web Server.</p>
+<form action="/submit" method="POST">
+    <label>Name:</label>
+    <input type="text" name="name" required>
 
-<a href="/">Back to Home</a>
-<br>
-<a href="/about">About Us</a>
+    <br><br>
+
+    <label>Message:</label>
+    <textarea name="message" required></textarea>
+
+    <br><br>
+
+    <button type="submit">Submit</button>
+</form>
 </body>
 </html>
