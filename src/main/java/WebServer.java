@@ -59,6 +59,7 @@ public class WebServer {
                 String requestBody = new String(bodyBytes, StandardCharsets.UTF_8);
 
                 System.out.println("POST BODY: " + requestBody);
+
                 if (!requestBody.isEmpty()) {
                     String[] fields = requestBody.split("&");
 
@@ -66,10 +67,15 @@ public class WebServer {
                         String[] pair = field.split("=", 2);
 
                         if (pair.length == 2) {
-                            System.out.println(pair[0] + ": " + pair[1]);
+                            String value = URLDecoder.decode(
+                                    pair[1], StandardCharsets.UTF_8
+                            );
+
+                            System.out.println(pair[0] + ": " + value);
                         }
                     }
                 }
+
 
                 String[] parts = request.trim().split("\\s+");
 
