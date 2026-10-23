@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 
 public class WebServer {
+
     private static String readHttpLine(InputStream input) throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int b;
@@ -24,6 +25,7 @@ public class WebServer {
 
         return buffer.toString(StandardCharsets.UTF_8);
     }
+
     public static void main(String[] args) throws IOException {
 
         ServerSocket server = new ServerSocket(8080);
@@ -54,11 +56,11 @@ public class WebServer {
                     }
                 }
 
-                System.out.println("Content Length: " + contentLength);
                 byte[] bodyBytes = input.readNBytes(contentLength);
                 String requestBody = new String(bodyBytes, StandardCharsets.UTF_8);
 
                 System.out.println("POST BODY: " + requestBody);
+                System.out.println("Content Length: " + contentLength);
 
                 if (!requestBody.isEmpty()) {
                     String[] fields = requestBody.split("&");
@@ -76,7 +78,6 @@ public class WebServer {
                     }
                 }
 
-
                 String[] parts = request.trim().split("\\s+");
 
                 String path = "";
@@ -92,7 +93,9 @@ public class WebServer {
 
                 } else {
                     String method = parts[0];
-                    path = parts[1];
+                    String fullPath = parts[1];
+                    path = fullPath.split("\\?", 2)[0];
+
                     if (method.equals("POST") && path.equals("/submit")) {
                         body = "Form submitted successfully!";
                         statusCode = 200;
@@ -112,6 +115,8 @@ public class WebServer {
                             fileName = "about.html";
                         } else if (path.equals("/contact")) {
                             fileName = "contact.html";
+                        } else if (path.equals("/search")) {
+                            fileName = "search.html";
                         } else if (path.equals("/style.css")) {
                             fileName = "style.css";
                             contentType = "text/css; charset=UTF-8";
